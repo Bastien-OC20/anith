@@ -64,6 +64,7 @@ def awareness_section():
     data = {}
     sensibilisation_options = [
         "Intervenants extérieurs (asso / police / autres)",
+        "Famille",
         "Personnel de l’établissement",
         "Personne",
     ]

@@ -21,10 +21,9 @@ from schemas.questionnaire_schema import (
 def display():
     st.title("📝 Questionnaire sur le Harcèlement et la Santé Mentale")
     st.markdown(
-        "Merci de remplir ce questionnaire"
-        "de manière **honnête** et **anonyme**."
-        "Toutes les données seront utilisées uniquement"
-        "à des fins d'analyse éducative."
+        "Merci de remplir ce questionnaire **anonyme**."
+        " Toutes les données seront utilisées uniquement"
+        " à des fins d'analyse éducative."
     )
 
     with st.form("questionnaire_form"):

@@ -14,13 +14,11 @@ def save_response(response: QuestionnaireResponse):
     data_dict = response.to_dict()
     file_exists = os.path.isfile(DATA_FILE)
 
-    with open(DATA_FILE, mode="a", newline="", encoding="utf-8") as csvfile:
-        writer = csv.DictWriter(csvfile, fieldnames=data_dict.keys())
-
-        # Écrire l’en-tête uniquement si le fichier n’existe pas
-        if not file_exists:
-            writer.writeheader()
-
-        writer.writerow(data_dict)
-    print(f"Réponse sauvegardée : {data_dict}")
-    print(f"Réponse sauvegardée : {response}")
+    try:
+        with open(DATA_FILE, mode="a", newline="", encoding="utf-8") as file:
+            writer = csv.DictWriter(file, fieldnames=data_dict.keys())
+            if not file_exists:
+                writer.writeheader()
+            writer.writerow(data_dict)
+    except Exception as e:
+        print(f"Erreur lors de la sauvegarde des données : {e}")

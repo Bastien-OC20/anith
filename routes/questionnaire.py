@@ -3,7 +3,6 @@
 import streamlit as st
 from datetime import datetime
 from modules.data_handler import save_response
-from models.response_model import QuestionnaireResponse
 from schemas.questionnaire_schema import (
     general_info_section,
     harassment_experience_section,
@@ -70,6 +69,40 @@ def display():
 
         if submitted:
             responses["timestamp"] = datetime.now().isoformat()
-            data = QuestionnaireResponse(**responses)
-            save_response(data)
-            st.success("✅ Merci ! Votre réponse a bien été enregistrée.")
+            print(responses)  # Debug : Affiche les réponses collectées
+            st.write(
+                "✅ Champs reçus depuis le formulaire :"
+            )
+            st.write(
+                list(responses.keys())
+            )
+
+            from models.response_model import QuestionnaireResponse
+            expected_keys = QuestionnaireResponse.__annotations__.keys()
+            st.write(
+                "✅ Champs attendus par le modèle :",
+                list(expected_keys)
+            )
+
+            # Filtrer les réponses pour ne garder que les clés attendues
+            filtered_responses = {
+                k: v for k, v in responses.items() if k in expected_keys
+            }
+
+            # Affiche les différences
+            unexpected = [
+                k for k in responses.keys() if k not in expected_keys
+            ]
+            if unexpected:
+                st.error(f"❌ Clés inconnues dans les réponses : {unexpected}")
+
+            # Créer l'objet QuestionnaireResponse avec les réponses filtrées
+            try:
+                data = QuestionnaireResponse(**filtered_responses)
+                save_response(data)
+                st.success("✅ Merci ! Votre réponse a bien été enregistrée.")
+            except TypeError as e:
+                st.error(
+                    f"Erreur lors de la création de l'objet "
+                    f"QuestionnaireResponse : {e}"
+                )

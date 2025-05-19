@@ -23,15 +23,15 @@ class QuestionnaireResponse:
     sensibilisation: str
 
     # Signalements (réactions)
-    signalement_Un_Prof: str
-    signalement_Le_Prof_Principal: str
-    signalement_Le_Référent_Vie_Scolaire: str
-    signalement_Un_membre_de_la_Vie_Scolaire: str
-    signalement_Un_membre_de_la_direction: str
-    signalement_Un_membre_de_l_etablissement: str
-    signalement_Un_membre_de_ma_famille: str
-    signalement_Une_tierce_personne: str
-    signalement_Le_3018: str
+    signalement_un_prof: str
+    signalement_le_prof_principal: str
+    signalement_le_referent_vie_scolaire: str
+    signalement_un_membre_de_la_vie_scolaire: str
+    signalement_un_membre_de_la_direction: str
+    signalement_un_membre_de_l_etablissement: str
+    signalement_un_membre_de_ma_famille: str
+    signalement_une_tierce_personne: str
+    signalement_le_3018: str
 
     # Vie numérique
     possede_smartphone: str
@@ -69,14 +69,10 @@ class QuestionnaireResponse:
     # Commentaire libre
     commentaire_libre: Optional[str] = field(default="")
 
-    def to_dict(self) -> dict:
+    # Removed custom __init__ method to avoid overriding dataclass behavior.
+
+    def to_dict(self):
         """
-        Convertit l'objet dataclass"
-        "en dictionnaire pret a l'enregistrement CSV.
-        Les listes sont converties en chaines separees par des virgules.
+        Convertit l'objet en dictionnaire.
         """
-        result = asdict(self)
-        for key, value in result.items():
-            if isinstance(value, list):
-                result[key] = ", ".join(value)
-        return result
+        return asdict(self)

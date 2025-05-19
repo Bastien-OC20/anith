@@ -1,10 +1,10 @@
 # routes/stats.py
 
-import streamlit as st
-import pandas as pd
 import os
-import matplotlib.pyplot as plt
+import pandas as pd
+import streamlit as st
 import seaborn as sns
+import matplotlib.pyplot as plt
 
 DATA_FILE = "data/responses.csv"
 

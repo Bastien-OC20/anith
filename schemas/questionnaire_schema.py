@@ -1,6 +1,24 @@
-# schemas/questionnaire_schema.py
-
 import streamlit as st
+import unicodedata
+import re
+
+
+def clean_key(label: str) -> str:
+    """
+    Nettoie un label pour générer une clé Python valide et cohérente.
+    Exemple : "Un membre de l’établissement" → "un_membre_de_l_etablissement"
+    """
+    label = (
+        unicodedata.normalize("NFD", label)
+        .encode("ascii", "ignore")
+        .decode("utf-8")
+    )  # Supprimer accents
+    label = label.lower()
+    label = label.replace("l'etablissement", "l_etablissement")
+    label = label.replace("letablissement", "l_etablissement")
+    label = re.sub(r"[^\w\s]", "", label)
+    label = re.sub(r"\s+", "_", label)
+    return label
 
 
 def general_info_section():
@@ -32,10 +50,12 @@ def harassment_experience_section():
         "Tu as été la cible de :", options
     )
     data["harcelement_temoin"] = st.multiselect(
-        "Tu as été témoin de :", options
-    )
+        "Tu as été témoin de :",
+        options
+        )
     data["harcelement_auteur"] = st.multiselect(
-        "Tu as été l’auteur de :", options
+        "Tu as été l’auteur de :",
+        options
     )
     return data
 
@@ -68,8 +88,10 @@ def witness_response_section():
         "Le 3018",
     ]
     for personne in acteurs:
-        data[f"signalement_{personne}"] = st.radio(
-            f"Préviendrais-tu {personne} ?", ["Oui", "Non"], key=personne
+        key_name = f"signalement_{clean_key(personne)}"
+        print(f"Clé générée : {key_name}")  # Debug
+        data[key_name] = st.radio(
+            f"Préviendrais-tu {personne} ?", ["Oui", "Non"], key=key_name
         )
     return data
 
@@ -83,7 +105,6 @@ def digital_life_section():
     data["comptes_possedes"] = st.multiselect(
         "Tu possèdes un compte sur :", plateformes
     )
-
     exposition = [
         "Contenus violents",
         "Contenus pornographiques",
@@ -107,23 +128,29 @@ def mental_health_section():
         "Presque tous les jours",
     ]
     data["tristesse"] = st.radio(
-        "Au cours des 2 dernières semaines,"
-        "à quelle fréquence t'es-tu senti triste ou désespéré ?",
+        (
+            "Au cours des 2 dernières semaines, à quelle fréquence t'es-tu "
+            "senti triste ou désespéré ?"
+        ),
         frequences,
     )
     data["plaisir"] = st.radio(
-        "À quelle fréquence as-tu eu"
-        "peu d’intérêt ou de plaisir à faire les choses ?",
+        (
+            "À quelle fréquence as-tu eu peu d’intérêt ou de plaisir "
+            "à faire les choses ?"
+        ),
         frequences,
     )
     stress_niveau = ["Très faible", "Faible", "Moyen", "Élevé", "Très élevé"]
     data["niveau_stress"] = st.radio(
         "Ton niveau de stress général est :", stress_niveau
     )
-    vision_avenir = ["Oui, tout à fait",
-                     "Plutôt oui",
-                     "Plutôt non",
-                     "Non, pas du tout"]
+    vision_avenir = [
+        "Oui, tout à fait",
+        "Plutôt oui",
+        "Plutôt non",
+        "Non, pas du tout"
+        ]
     data["vision_avenir"] = st.radio(
         "As-tu une vision positive de l’avenir ?", vision_avenir
     )
@@ -155,10 +182,12 @@ def school_life_section():
     data = {}
     freqs = ["Jamais", "Rarement", "Parfois", "Souvent", "Très souvent"]
     data["stress_etudes"] = st.radio(
-        "Te sens-tu stressé(e) par tes études ?", freqs
-        )
+        "Te sens-tu stressé(e) par tes études ?",
+        freqs
+    )
     data["concentration"] = st.radio(
-        "As-tu des difficultés à te concentrer ?", freqs
+        "As-tu des difficultés à te concentrer ?",
+        freqs
         )
     data["securite_ecole"] = st.radio(
         "Te sens-tu en sécurité à l’école ?",
@@ -182,11 +211,12 @@ def physical_wellbeing_section():
     )
     data["alimentation"] = st.radio(
         "Comment évalues-tu ton alimentation ?",
-        ["Très saine",
-         "Plutôt saine",
-         "Moyenne",
-         "Plutôt mauvaise",
-         "Très mauvaise"],
+        [
+            "Très saine",
+            "Plutôt saine",
+            "Moyenne",
+            "Plutôt mauvaise",
+            "Très mauvaise"],
     )
     return data
 
